@@ -48,25 +48,11 @@
     $form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const form = new FormData(e.target);
-      const avatar = form.get("user-avatar");
-      const reader = new FileReader();
-      reader.readAsDataURL(avatar);
-      reader.onload = async function () {
-        const encodedAvatar = await reader.result;
-        const user = {
-          user: form.get("user-input"),
-          password: form.get("user-password"),
-          avatar: encodedAvatar,
-        };
-        const response = await fetch(`http://localhost:5000/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json;charset=utf-8",
-          },
-          body: JSON.stringify(user),
-        });
-        const result = await response.json();
-      };
+      const response = await fetch(`http://localhost:5000/`, {
+        method: "POST",
+        body: form,
+      });
+      const result = await response.json();
     });
   </script>
 </html>

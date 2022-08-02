@@ -1,22 +1,15 @@
 const express = require("express");
 const app = express();
-const fs = require("fs");
+const multer = require("multer");
+const upload = multer({ dest: "./public" });
 const PORT = process.env.PORT || 5000;
 
 app.use(express.static("public"));
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json());
 
-app.post("/", (req, res) => {
-  const { user, password, avatar } = req.body;
-  const base64Data = avatar.replace(/^data:image\/png;base64,/, "");
-  fs.writeFile("out.png", base64Data, "base64", (err) => {
-    console.log(err);
-  });
-  const data = {
-    user,
-    password,
-    avatar,
-  };
+app.post("/", upload.single("user-avatar"), function (req, res, next) {
+  const { "user-input": user, "user-password": password } = req.body;
+  console.log(user, password, req.file);
   res.status(200).json({
     message: "Esta bien su codigo sr. :)",
   });
