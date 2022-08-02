@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <form id="user-form">
+      <div class="mb-3">
+        <label for="user-input" class="form-label">User</label>
+        <input
+          type="text"
+          class="form-control"
+          name="user-input"
+          id="user-input"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="user-password" class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          name="user-password"
+          id="user-password"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="user-avatar" class="form-label">Avatar</label>
+        <input
+          class="form-control"
+          type="file"
+          name="user-avatar"
+          id="user-avatar"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </body>
+  <script>
+    const $form = document.getElementById("user-form");
+    $form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const avatar = form.get("user-avatar");
+      const reader = new FileReader();
+      reader.readAsDataURL(avatar);
+      reader.onload = async function () {
+        const encodedAvatar = await reader.result;
+        const user = {
+          user: form.get("user-input"),
+          password: form.get("user-password"),
+          avatar: encodedAvatar,
+        };
+        const response = await fetch(`http://localhost:5000/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify(user),
+        });
+        const result = await response.json();
+      };
+    });
+  </script>
+</html>
